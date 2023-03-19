@@ -1,16 +1,15 @@
-
-import React, { useState } from 'react'
-import './App.css';
+import logo from './logo.svg';
+import { useState } from 'react'
+import './pages/App.css';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
-import {AppBar, Link, Toolbar, Typography} from "@mui/material";
 
-const API_KEY = "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";
+const API_KEY = "";
 const systemMessage = { //  Explain things like you're talking to a software professional with 5 years of experience.
-  "role": "system", "content": "Explain things as best as you can"
+  "role": "system", "content": "Explain things like you're a Chinese expertise"
 }
 
-function Chatroom() {
+function App() {
   const [messages, setMessages] = useState([
     {
       message: "Hello, I'm DCHAT! Ask me anything!",
@@ -85,28 +84,26 @@ function Chatroom() {
   }
 
   return (
-      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ height: "80vh", width: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="App">
+        <div style={{ height: "calc(85vh - 150px)", width: "100%", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
           <MainContainer style={{
             backgroundColor: '#f2f2f2',
+            padding: '20px',
             borderRadius: '30px',
             boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.1)',
-            width: '100%',
-            display: 'flex', // Add this line
-            flexGrow: 1, // Add this line
+            maxWidth: '600px',
+            width: '100%'
           }}>
 
             <ChatContainer style={{
               backgroundColor: '#fff',
               borderRadius: '10px',
               boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.1)',
-              flexGrow: 1, // Add this line
-               // Add this line
             }}>
               <MessageList
                   style={{
-                    backgroundImage: 'linear-gradient(135deg, #f5f5f5 0%, rgba(63,181,171,0.25) 100%)',
+                    backgroundImage: 'linear-gradient(45deg, #f3ec78, #af4261)',
                     borderRadius: '10px',
                     backgroundColor: '#fff',
                     boxShadow: '0px 0px 10px 5px rgba(0,0,0,0.1)',
@@ -145,4 +142,4 @@ function Chatroom() {
   )
 }
 
-export default Chatroom
+export default App

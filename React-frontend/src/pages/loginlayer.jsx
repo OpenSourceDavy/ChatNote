@@ -16,6 +16,8 @@ import { LockOutlined } from '@mui/icons-material';
 import axios from 'axios';
 import ParticlesBg from 'particles-bg';
 import { useSpring, animated } from 'react-spring';
+import md5 from "js-md5";
+import {useNavigate} from "react-router-dom";
 
 const BackgroundWrapper = styled('div')({
     minHeight: '100vh',
@@ -90,18 +92,31 @@ function Copyright(props) {
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const nav = useNavigate();
     const handleSubmit = async (e) => {
+
         e.preventDefault();
-        try {
-            const response = await axios.post('http://72.140.181.114:4000/login', {
-                email,
-                password,
-            });
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error during login:', error);
-        }
+        let encryptedPassword = md5(password);
+        const user={email,encryptedPassword}
+        fetch(`http://localhost:9091/login`,{
+            method:"POST",
+            mode: 'cors',
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(user)
+
+        }).then(res=>res.json())
+            .then((res)=>{
+                if (res.code==='1') {
+                    alert("signin successfully");
+                    console.log(res.data.email)
+                    nav('/userLayout', {state: {mail: res.data.email}});
+                }
+                else {
+                    alert("sign up failed")
+                }
+
+            })
+
     };
 
     const formAnimation = useSpring({

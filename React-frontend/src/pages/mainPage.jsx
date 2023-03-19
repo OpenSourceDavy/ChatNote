@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Chatroom from "./chatRoom";
 import {
     AppBar,
@@ -11,7 +11,7 @@ import {
     ListItem,
     ListItemText,
     Paper,
-    Divider, CircularProgress, Link,
+    Divider, CircularProgress, Link, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { IconButton, Menu, MenuItem } from '@mui/material';
@@ -22,14 +22,14 @@ import { useCallback } from 'react';
 import { useRef } from 'react';
 import htmlDocx from 'html-docx-js/dist/html-docx';
 import { saveAs } from 'file-saver';
-
+import { useLocation } from 'react-router-dom';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import * as PropTypes from "prop-types";
 import jsPDF from 'jspdf';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import htmlToPdfmake from 'html-to-pdfmake';
-
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -47,9 +47,10 @@ const ChatRoomWrapper = styled(Box)(({ theme }) => ({
     padding: theme.spacing(2),
     overflowY: 'auto',
     marginRight: theme.spacing(1),
-    width: '800px', // Set a fixed width
-    minWidth: '800px', // Make sure the width doesn't shrink below the fixed width
-    maxWidth: '800px'
+    width: '54vw', // Set a fixed width
+    minWidth: '54vw', // Make sure the width doesn't shrink below the fixed width
+    maxWidth: '54vw'
+
 }));
 const BackgroundWrapper = styled(Box)({
     position: 'fixed',
@@ -72,12 +73,15 @@ const NotesWrapper = styled(Box)(({ theme }) => ({
     padding: theme.spacing(2),
     overflowY: 'auto',
     marginLeft: theme.spacing(1),
-    width: '600px', // Set a fixed width
-    minWidth: '600px', // Make sure the width doesn't shrink below the fixed width
-    maxWidth: '600px',
+    width:'41vw', // Set a fixed width
+    minWidth: '41vw', // Make sure the width doesn't shrink below the fixed width
+    maxWidth: '41vw',
     borderRadius: '5px', // Add border radius
     boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', // Add box shadow
+
 }));
+
+
 const quillToolbarOptions = [
     [{ 'font': [] }, { 'size': ['small', false, 'large', 'huge'] }],
     ['bold', 'italic', 'underline', 'strike'],
@@ -99,15 +103,29 @@ function Text(props) {
     return null;
 }
 
+const StyledLink = styled('span')(({ theme }) => ({
+    color: '#f5f5f5',
+    textDecoration: 'underline',
+    cursor: 'pointer',
+    '&:hover': {
+        textDecoration: 'none',
+    },
+}));
+
+const StyledDialogContent = styled(DialogContent)({
+    minWidth: 300,
+});
+
 Text.propTypes = {children: PropTypes.node};
 
 function MainPage() {
+    const location = useLocation();
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const [anchorEl, setAnchorEl] = useState(null);
-
-    const [notesContent, setNotesContent] = useState('');
+    const [userMail,setUsermail] = useState('noaccount@chat.com')
     const [downanchorEl, setdownAnchorEl] = useState(null);
-
+    const [openFeedbackDialog, setOpenFeedbackDialog] = useState(false);
+    const [message, setMessage] = useState('');
     const handleClick = (event) => {
         setdownAnchorEl(event.currentTarget);
     };
@@ -119,9 +137,13 @@ function MainPage() {
         setAnchorEl(event.currentTarget);
     };
     const notesContentRef = useRef('');
-
+    const nav = useNavigate();
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+    const handleMenuCloseLogout = () => {
+        setAnchorEl(null);
+        nav("/")
     };
     const StyledReactQuill = styled(ReactQuill)(({ theme }) => ({
         border: '1px solid #e0e0e0',
@@ -157,7 +179,32 @@ function MainPage() {
         pdfMake.createPdf(docDefinition).download('notes.pdf');
     };
 
+    const sendFeedback=()=>{
+        const feedback = {userMail,message}
+        fetch(`http://localhost:9091/feedbacks`,{
+            method:"POST",
+            mode: 'cors',
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(feedback)
 
+        }).then(res=>res.json())
+            .then((res)=>{
+                if (res.code==='1') {
+                    alert("Your feedbacks was successfully sent");
+                }
+                else {
+                    alert("sent failed")
+                }
+
+            })
+    }
+    useEffect(()=>{
+        if (location.state != null){
+            setUsermail(location.state.mail);
+        }
+
+        
+    },[])
     return (
 
             <BackgroundWrapper>
@@ -174,14 +221,43 @@ function MainPage() {
                     >
                         ChatNote
                     </Typography>
-                    <Link
-                        component="button"
-                        variant="body2"
-                        onClick={()=>{alert(" plz send you feedbacks to davy3232323@gmail.com")}}
-                        style={{ color: 'inherit', textDecoration: 'underline' }}
-                    >
+                    <StyledLink onClick={() => setOpenFeedbackDialog(true)}>
                         Share your feedbacks
-                    </Link>
+                    </StyledLink>
+
+                    <Dialog
+                        open={openFeedbackDialog}
+                        onClose={() => setOpenFeedbackDialog(false)}
+                        aria-labelledby="feedback-dialog-title"
+                        aria-describedby="feedback-dialog-description"
+                    >
+                        <DialogTitle id="feedback-dialog-title">We value your feedbacks!</DialogTitle>
+                        <StyledDialogContent>
+                            <DialogContentText id="feedback-dialog-description">
+                                Please enter your feedback below:
+                            </DialogContentText>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="feedback"
+                                label="Feedback"
+                                type="text"
+                                fullWidth
+                                multiline
+                                rows={4}
+                                value={message}
+                                onChange={(e) => setMessage(e.target.value)}
+                            />
+                        </StyledDialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setOpenFeedbackDialog(false)} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={sendFeedback} color="primary" variant="contained">
+                                Send
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                     <IconButton
                         edge="end"
                         color="inherit"
@@ -203,7 +279,7 @@ function MainPage() {
                     >
                         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
                         <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-                        <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+                        <MenuItem onClick={handleMenuCloseLogout}>Logout</MenuItem>
                     </Menu>
                 </Toolbar>
 

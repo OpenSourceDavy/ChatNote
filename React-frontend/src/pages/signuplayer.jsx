@@ -110,27 +110,27 @@ function SignupPage() {
     useEffect(() => {
         setPasswordsMatch(password === confirmedPassword);
     }, [password, confirmedPassword]);
-    const checkEmail = (e) => {
-
-        fetch(`/checkmail`,{
-
-            method:"POST",
-            mode: 'cors',
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({email})
-
-        }).then(res=>res.json())
-            .then((res)=>{
-                if(res.code===0){
-                    setmailError("Email not Avaliable");
-
-                }
-                else{
-                    setmailError("");
-                }
-            })
-
-    }
+    // const checkEmail = (e) => {
+    //
+    //     fetch(`/checkmail`,{
+    //
+    //         method:"POST",
+    //         mode: 'cors',
+    //         headers:{"Content-Type":"application/json"},
+    //         body:JSON.stringify({email})
+    //
+    //     }).then(res=>res.json())
+    //         .then((res)=>{
+    //             if(res.code===0){
+    //                 setmailError("Email not Avaliable");
+    //
+    //             }
+    //             else{
+    //                 setmailError("");
+    //             }
+    //         })
+    //
+    // }
     const checkPasswords = (event) => {
         if (password !== confirmPassword) {
 
@@ -141,16 +141,13 @@ function SignupPage() {
         }
     }
 
-    const handleSubmit = (e) => {
-        // checkPasswords(e)
-        // e.preventDefault();
-
-        if (cell&&name&&email&&password){
-            const encrypted_password = md5(password);
-            const user={name,cell,email,encrypted_password}
+    const handleSignup = (e) => {
+            e.preventDefault();
+            const encryptedPassword = md5(password);
+            const user={name,cell,email,encryptedPassword}
 
             console.log(user)
-            fetch(`register`,{
+            fetch(`http://localhost:9091/register`,{
                 method:"POST",
                 mode: 'cors',
                 headers:{"Content-Type":"application/json"},
@@ -158,14 +155,14 @@ function SignupPage() {
 
             }).then(res=>res.json())
                 .then((res)=>{
-                    if (res.code===1){alert("register successfully");
+                    if (res.code==='1'){alert("register successfully");
 
                         nav('/')}
                     else {
-                        alert("email exists")
+                        alert("sign up failed")
                     }
 
-                })}
+                })
 
 
     }
@@ -189,7 +186,7 @@ function SignupPage() {
                         <Typography component="h1" variant="h5">
                             Sign up
                         </Typography>
-                        <StyledForm onSubmit={handleSubmit}>
+                        <StyledForm onSubmit={handleSignup}>
                             <TextField
                                 margin="normal"
 
@@ -247,7 +244,7 @@ function SignupPage() {
                                 onChange={(e)=>setEmail(e.target.value)}
                                 error={mailerror}
                                 helperText={mailerror}
-                                onBlur={(e)=>checkEmail(e)}
+                                // onBlur={(e)=>checkEmail(e)}
 
                             />
                             <TextField
@@ -270,6 +267,7 @@ function SignupPage() {
                                 variant="contained"
                                 color="primary"
                                 disabled={!passwordsMatch}
+                                on
                             >
                                 Sign Up
                             </StyledButton>
