@@ -18,65 +18,9 @@ import ParticlesBg from 'particles-bg';
 import { useSpring, animated } from 'react-spring';
 import {useNavigate} from "react-router-dom";
 import md5 from 'js-md5'
+import {BackgroundWrapper,WebsiteTitle,StyledContainer,StyledForm,StyledButton,StyledPaper} from './loginlayer'
 
-const BackgroundWrapper = styled('div')({
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundImage: `url(${process.env.PUBLIC_URL + '/bg-image.jpg'})`,
-    backgroundSize: '150% 150%',
-    backgroundPosition: 'center',
-    animation: 'backgroundMove 30s infinite alternate',
-    '@keyframes backgroundMove': {
-        '0%': {
-            backgroundPosition: 'left top',
-        },
-        '50%': {
-            backgroundPosition: 'right bottom',
-        },
-        '100%': {
-            backgroundPosition: 'left top',
-        },
-    },
-});
-const WebsiteTitle = styled(Typography)(({ theme }) => ({
-    fontFamily: "'Roboto', sans-serif",
-    fontSize: '2.5rem',
-    fontWeight: 600,
-    color: 'rgb(45,29,29)',
-    textAlign: 'center',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-    marginBottom: theme.spacing(4),
-}));
 
-const StyledContainer = styled(Container)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: theme.spacing(2),
-    borderRadius: theme.shape.borderRadius,
-
-}));
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: theme.shadows ? theme.shadows[8] : '0 5px 15px rgba(0, 0, 0, 0.3)',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Increase transparency by reducing the alpha value (0.6)
-}));
-
-const StyledForm = styled('form')(({ theme }) => ({
-    width: '100%',
-    marginTop: theme.spacing(1),
-}));
-
-const StyledButton = styled(Button)(({ theme }) => ({
-    margin: theme.spacing(3, 0, 2),
-}));
 
 function Copyright(props) {
     return (
@@ -147,7 +91,7 @@ function SignupPage() {
             const user={name,cell,email,encryptedPassword}
 
             console.log(user)
-            fetch(`http://localhost:9091/register`,{
+            fetch(`http://175.24.204.121:9091/register`,{
                 method:"POST",
                 mode: 'cors',
                 headers:{"Content-Type":"application/json"},
