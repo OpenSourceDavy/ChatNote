@@ -1,8 +1,11 @@
-import React, {useEffect, useMemo, useState} from 'react';
-
+import Head from 'next/head'
+import Image from 'next/image'
+import { Inter } from 'next/font/google'
+// import styles from '@/styles/Home.module.css'
+import React, {useEffect, useState} from 'react';
+import { ReactNode } from 'react';
 import {
     Container,
-    Box,
     TextField,
     Typography,
     Button,
@@ -13,18 +16,29 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { LockOutlined } from '@mui/icons-material';
-import axios from 'axios';
-import ParticlesBg from 'particles-bg';
+import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import { useSpring, animated } from 'react-spring';
-import {useNavigate} from "react-router-dom";
-import md5 from 'js-md5'
-import {BackgroundWrapper,WebsiteTitle,StyledContainer,StyledForm,StyledButton,StyledPaper} from './loginlayer'
 
 
+import md5 from "js-md5";
 
-function Copyright(props) {
+import ParticlesBg, { Props } from 'particles-bg';
+
+const DynamicParticlesBg = dynamic<Props>(() => import('particles-bg').then((mod) => mod.default), {
+    ssr: false,
+});
+
+import {BackgroundWrapper,WebsiteTitle,StyledContainer,StyledForm,StyledButton,StyledPaper} from './index'
+
+
+interface CopyrightProps {
+    [key: string]: ReactNode;
+}
+
+function Copyright(props: CopyrightProps) {
     return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
+        <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 5 }}>
             {'Copyright © '}
             <Link color="inherit" href="/">
                 ChatNote powered by ChatGPT
@@ -35,92 +49,59 @@ function Copyright(props) {
     );
 }
 
-function SignupPage() {
-    const[name,setName]=useState('')
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [passwordErrorText, setPasswordErrorText] = React.useState("");
-    const[password,setPassword]=useState('')
-    const[email,setEmail]=useState('')
-    const[cell,setCell]=useState('')
-    const [nameerror, setnameError] = useState("");
-    const [nameCheckError, setnameCheckError] = useState("");
-    const [passerror, setpassError] = useState("");
-    const [mailerror, setmailError] = useState("");
-    const [cellerror, setcellError] = useState("");
-    const [confirmedPassword, setConfirmedPassword] = useState('');
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
-    const nav = useNavigate();
+const LoginPage: React.FC = () => {
+    const [name, setName] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [cell, setCell] = useState<string>('');
+    const [nameerror, setnameError] = useState<string>("");
+    const [passerror, setpassError] = useState<string>("");
+    const [mailerror, setmailError] = useState<string>("");
+    const [cellerror, setcellError] = useState<string>("");
+    const [confirmedPassword, setConfirmedPassword] = useState<string>('');
+    const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
+
 
     useEffect(() => {
         setPasswordsMatch(password === confirmedPassword);
     }, [password, confirmedPassword]);
-    // const checkEmail = (e) => {
-    //
-    //     fetch(`/checkmail`,{
-    //
-    //         method:"POST",
-    //         mode: 'cors',
-    //         headers:{"Content-Type":"application/json"},
-    //         body:JSON.stringify({email})
-    //
-    //     }).then(res=>res.json())
-    //         .then((res)=>{
-    //             if(res.code===0){
-    //                 setmailError("Email not Avaliable");
-    //
-    //             }
-    //             else{
-    //                 setmailError("");
-    //             }
-    //         })
-    //
-    // }
-    const checkPasswords = (event) => {
-        if (password !== confirmPassword) {
 
-            setPasswordErrorText("Passwords do not match");
-            event.preventDefault();
-        } else {
-            setPasswordErrorText("");
-        }
-    }
+    const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const encryptedPassword = md5(password);
+        const user={name,cell,email,encryptedPassword}
 
-    const handleSignup = (e) => {
-            e.preventDefault();
-            const encryptedPassword = md5(password);
-            const user={name,cell,email,encryptedPassword}
+        console.log(user)
+        fetch(`http://175.24.204.121:9091/register`,{
+            method:"POST",
+            mode: 'cors',
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(user)
 
-            console.log(user)
-            fetch(`http://175.24.204.121:9091/register`,{
-                method:"POST",
-                mode: 'cors',
-                headers:{"Content-Type":"application/json"},
-                body:JSON.stringify(user)
+        }).then(res=>res.json())
+            .then((res)=>{
+                if (res.code==='1'){alert("register successfully");
 
-            }).then(res=>res.json())
-                .then((res)=>{
-                    if (res.code==='1'){alert("register successfully");
+                }
+                else {
+                    alert("sign up failed")
+                }
 
-                        nav('/')}
-                    else {
-                        alert("sign up failed")
-                    }
-
-                })
+            })
 
 
     }
 
-    const formAnimation = useSpring({
+    const formAnimation : any = useSpring({
         from: { opacity: 0, transform: 'translate3d(0, -50px, 0)' },
         to: { opacity: 1, transform: 'translate3d(0, 0, 0)' },
         config: { duration: 1000 },
-    });
+    }) ;
 
     return (
         <BackgroundWrapper>
-            <ParticlesBg type="cobweb" num={50} color="#ffffff" bg={true} />
-            <StyledContainer component="main" maxWidth="xs">
+            <DynamicParticlesBg type="cobweb" num={50} color="#ffffff" bg={true} />
+            <StyledContainer  maxWidth="xs">
                 <animated.div style={formAnimation}>
                     <WebsiteTitle>ChatNote</WebsiteTitle>
                     <StyledPaper>
@@ -144,7 +125,7 @@ function SignupPage() {
                                 autoFocus={true}
 
                                 onChange={(e)=>{setName(e.target.value)}}
-                                error={nameerror}
+
                                 helperText={nameerror}
                             />
 
@@ -158,7 +139,7 @@ function SignupPage() {
                                 id="password"
                                 value={password}
                                 onChange={(e)=>setPassword(e.target.value)}
-                                error={passerror}
+
                                 helperText={passerror}
                             />
                             <TextField
@@ -186,7 +167,7 @@ function SignupPage() {
                                 autoComplete="email"
                                 value={email}
                                 onChange={(e)=>setEmail(e.target.value)}
-                                error={mailerror}
+
                                 helperText={mailerror}
                                 // onBlur={(e)=>checkEmail(e)}
 
@@ -202,7 +183,6 @@ function SignupPage() {
                                 autoComplete="tel"
                                 value={cell}
                                 onChange={(e)=>setCell(e.target.value)}
-                                error={cellerror}
                                 helperText={cellerror}
                             />
                             <StyledButton
@@ -211,7 +191,6 @@ function SignupPage() {
                                 variant="contained"
                                 color="primary"
                                 disabled={!passwordsMatch}
-                                on
                             >
                                 Sign Up
                             </StyledButton>
@@ -222,10 +201,13 @@ function SignupPage() {
                             </Stack>
                         </StyledForm>
                     </StyledPaper>
+                    <Copyright  />
                 </animated.div>
             </StyledContainer>
+
         </BackgroundWrapper>
     );
 }
 
-export default SignupPage;
+export default LoginPage;
+
