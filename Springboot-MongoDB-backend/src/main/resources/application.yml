@@ -1,6 +1,0 @@
-server:
-  port: 9091
-spring:
-  data:
-    mongodb:
-      uri: mongodb://youye:xsxs66@175.24.204.121:27017/ChatNote
