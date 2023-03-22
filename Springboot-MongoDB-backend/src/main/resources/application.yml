@@ -3,4 +3,4 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/dchat
+      uri: mongodb://youye:xsxs66@175.24.204.121:27017/ChatNote

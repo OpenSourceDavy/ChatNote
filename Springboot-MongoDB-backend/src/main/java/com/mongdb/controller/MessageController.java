@@ -2,9 +2,7 @@ package com.mongdb.controller;
 
 import com.mongdb.common.Result;
 import com.mongdb.dao.MessageDao;
-import com.mongdb.dao.UserDao;
 import com.mongdb.model.MessageModel;
-import com.mongdb.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
