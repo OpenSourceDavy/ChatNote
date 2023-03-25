@@ -8,4 +8,5 @@ public class UserModel {
     private String cell;
     private String email;
     private String encryptedPassword;
+    private boolean isSubscribed;
 }
