@@ -1,7 +1,6 @@
 package com.mongdb.controller;
 
 import com.mongdb.common.Result;
-import com.mongdb.dao.EmailService;
 import com.mongdb.dao.UserDao;
 import com.mongdb.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private UserDao userDao;
-    private EmailService emailService;
+
 
     @PostMapping(value="/register")
     public Result register(@RequestBody UserModel userModel) throws Exception {
@@ -40,23 +39,6 @@ public class UserController {
             return Result.error("-1","wrong mail or password");
         }
         return Result.success(user);
-    }
-
-    @PostMapping("/subscribe")
-    public Result subscribeUser(@RequestBody UserModel userModel) {
-        // Save the user to the database
-        userModel.setSubscribed(true);
-        userDao.saveTest(userModel);
-
-        // Send a welcome email to the user
-        String subject = "Welcome to ChatNote!";
-        String text = "Hello " + userModel.getEmail() + ",\n\n" +
-                "Thank you for subscribing to our website. We're excited to have you on board!\n\n" +
-                "Best Regards,\n" +
-                "The Team";
-        emailService.sendSimpleEmail(userModel.getEmail(), subject, text);
-
-        return Result.success('1');
     }
 
     @GetMapping(value="/test3")
