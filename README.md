@@ -1,6 +1,7 @@
 # AI-Playground :rocket:
 
-Welcome to the AI-Playground, an interactive web application that leverages the power of OpenAI's API, including ChatGPT, DALL-E, and Text-Davinci. This project is built using Next.js and TypeScript for the front end, and Spring Boot with MongoDB for the back end.
+Welcome to the `AI-Playground`, an interactive web application that leverages the power of OpenAI's API, including `ChatGPT`, `DALL-E`, and `Text-Davinci`. This project is built using `Next.js` and `TypeScript` for the front end, and `Spring Boot` with `MongoDB` for the back end. `RabbitMQ`, `Redis`, `Clash` and other tech stacks are applied for flexibility.
+
 
 <p float="left">
 <img src="https://user-images.githubusercontent.com/113314216/228029335-7a13e736-9066-4c72-9f23-1f3555b61d17.png" alt="your_image_description" width="400"/>
