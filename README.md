@@ -9,7 +9,7 @@ Welcome to the `AI-Playground`, an interactive web application that leverages th
 <!-- ![de132040c5aab0c7d208c0f729c1c30](https://user-images.githubusercontent.com/113314216/228029440-383f1372-2b6c-49cf-9925-06ad33170d8e.png=250x150 ) -->
 </p>
 
-## View Live Demo:
+## View Live Demo（deprecated):
 http://chatnote.live
 
 ## Table of Contents
