@@ -2,7 +2,7 @@ package com.mongdb.controller;
 
 
 import com.mongdb.common.Result;
-//import com.mongdb.dao.EmailService;
+import com.mongdb.dao.EmailService;
 import com.mongdb.dao.UserDao;
 import com.mongdb.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private UserDao userDao;
-//    private EmailService emailService;
+    private EmailService emailService;
 
     @PostMapping(value="/register")
     public Result register(@RequestBody UserModel userModel) throws Exception {
@@ -55,9 +55,12 @@ public class UserController {
                 "Thank you for subscribing to our website. We're excited to have you on board!\n\n" +
                 "Best Regards,\n" +
                 "The Team";
-        emailService.sendSimpleEmail(userModel.getEmail(), subject, text);
-
-        return Result.success('1');
+        boolean mailSent = emailService.sendSimpleEmail(userModel.getEmail(), subject, text);
+        if (mailSent==true){
+            return Result.success('1');
+        }else{
+            return Result.error("0","cannot send mail");
+        }
     }
 
     @GetMapping(value="/test3")

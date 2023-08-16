@@ -17,7 +17,7 @@ public class EmailListener {
 
     @Autowired
     private SendGrid sendGrid;
-
+    //rabbit listener auto send ack if message is consumed
     @RabbitListener(queues = RabbitMQConfig.EMAIL_QUEUE)
     public void sendEmail(EmailMessage emailMessage) {
         Email from = new Email("davy3232323@gmail.com");
